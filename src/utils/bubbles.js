@@ -35,7 +35,6 @@ export const initBubbles = (containerId) => {
         }, duration * 1000);
     };
 
-    // Clear existing intervals
     const intervalId = setInterval(createBubble, 400);
 
     return () => clearInterval(intervalId);
