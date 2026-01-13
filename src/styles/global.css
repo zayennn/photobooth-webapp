@@ -20,7 +20,6 @@ code {
     monospace;
 }
 
-/* Bubble animation keyframes */
 @keyframes riseSpin {
   0% {
     transform: translateY(0) rotate(0deg) scale(1);
