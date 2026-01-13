@@ -1,4 +1,3 @@
-// Bubble animation module
 export const initBubbles = (containerId) => {
     const container = document.getElementById(containerId);
     if (!container) return;
