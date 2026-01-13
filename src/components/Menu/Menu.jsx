@@ -1,42 +1,38 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../common/Logo';
-import styles from './Menu.module.css';
+import './Home.css';
 
 const Menu = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleCameraClick = () => {
-        navigate('/camera');
-    };
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
-    const handleUploadClick = () => {
-        navigate('/upload');
-    };
+  const handleCamera = () => {
+    navigate('/camera');
+  };
 
-    return (
-        <div className={styles.menuContainer}>
-            <Logo />
+  const handleUpload = () => {
+    navigate('/upload');
+  };
 
-            <div className={styles.menuHeader} />
+  return (
+    <>
+      <div className="logo" onClick={handleLogoClick}>
+        <img src="Assets/fish-photobooth/logo-new.png" alt="Logo" />
+      </div>
 
-            <button
-                id="menu-camera-button"
-                className={styles.menuButton}
-                onClick={handleCameraClick}
-            >
-                Take photos
-            </button>
+      <div className="menu-container">
+        <div className="menu-header"></div>
+        <button id="menu-camera-button" onClick={handleCamera}>Take photos</button>
+        <button id="menu-upload-button" onClick={handleUpload}>Upload photos</button>
+      </div>
 
-            <button
-                id="menu-upload-button"
-                className={styles.menuButton}
-                onClick={handleUploadClick}
-            >
-                Upload photos
-            </button>
-        </div>
-    );
+      {/* Load JavaScript */}
+      <script src="Javascripts/home.js" async></script>
+    </>
+  );
 };
 
 export default Menu;
