@@ -23,7 +23,6 @@ const Camera = () => {
       return script;
     };
 
-    // Load camera.js
     const loadCamera = () => {
       const script = document.createElement('script');
       script.src = 'Javascripts/camera.js';
