@@ -5,307 +5,215 @@ import Logo from './Logo';
 const Final = () => {
     const navigate = useNavigate();
     const canvasRef = useRef(null);
-    const [stickers, setStickers] = useState([]);
-    const [selectedSticker, setSelectedSticker] = useState(null);
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-    const [seaweedIndex, setSeaweedIndex] = useState(0);
-    const [bubbleIndex, setBubbleIndex] = useState(0);
-    const [isLoaded, setIsLoaded] = useState(false);
 
     const WIDTH = 1176;
     const HEIGHT = 1470;
+
+    const [stickers, setStickers] = useState([]);
+    const [activeStickerId, setActiveStickerId] = useState(null);
+    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+    const [baseImage, setBaseImage] = useState(null);
 
     const seaweedImages = [
         '/Assets/fish-photobooth/camerapage/stickers/seaweed1.png',
         '/Assets/fish-photobooth/camerapage/stickers/seaweed2.png'
     ];
-    
+
     const bubbleImages = [
         '/Assets/fish-photobooth/camerapage/stickers/bubble1.png',
         '/Assets/fish-photobooth/camerapage/stickers/bubble2.png'
     ];
 
+    const [seaweedIndex, setSeaweedIndex] = useState(0);
+    const [bubbleIndex, setBubbleIndex] = useState(0);
+
+    /* ================= LOAD BASE IMAGE ================= */
     useEffect(() => {
         const dataURL = localStorage.getItem('photoStrip');
-        console.log('Loading photo from localStorage:', dataURL ? 'Found' : 'Not found');
-        
         if (!dataURL) {
-            alert("No photo found! Please take a photo first.");
+            alert('No photo found');
             navigate('/camera');
             return;
         }
 
-        const finalImage = new Image();
-        finalImage.crossOrigin = 'anonymous';
-        finalImage.onload = () => {
-            console.log('Image loaded successfully');
-            drawCanvas(finalImage);
-            setIsLoaded(true);
+        const img = new Image();
+        img.onload = () => {
+            setBaseImage(img);
+            draw(img, []);
         };
-        finalImage.onerror = () => {
-            console.error('Failed to load image');
-            alert("Failed to load photo. Please try again.");
-            navigate('/camera');
-        };
-        finalImage.src = dataURL;
-        
-        return () => {
-            // Optional: Clear localStorage if needed
-            // localStorage.removeItem('photoStrip');
-        };
+        img.src = dataURL;
     }, [navigate]);
 
-    const drawCanvas = (baseImage) => {
-        if (!canvasRef.current || !baseImage) return;
-        
+    /* ================= DRAW FUNCTION ================= */
+    const draw = (base, stickersToDraw) => {
         const ctx = canvasRef.current.getContext('2d');
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
-        
-        // Gambar foto dasar
-        ctx.drawImage(baseImage, 0, 0, WIDTH, HEIGHT);
-        
-        // Gambar semua sticker
-        stickers.forEach(sticker => {
-            if (sticker.img && sticker.img.complete) {
-                ctx.drawImage(sticker.img, sticker.x, sticker.y, sticker.width, sticker.height);
-            }
+        ctx.drawImage(base, 0, 0, WIDTH, HEIGHT);
+
+        stickersToDraw.forEach(s => {
+            ctx.drawImage(s.img, s.x, s.y, s.width, s.height);
         });
     };
 
+    useEffect(() => {
+        if (baseImage) draw(baseImage, stickers);
+    }, [stickers, baseImage]);
+
+    /* ================= ADD STICKER ================= */
     const addSticker = (src) => {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
         img.onload = () => {
-            const newSticker = {
-                img,
-                x: Math.random() * (WIDTH - 100),
-                y: Math.random() * (HEIGHT - 100),
-                width: img.width / 3,
-                height: img.height / 3,
-                dragging: false
-            };
-            
-            setStickers(prev => [...prev, newSticker]);
-            
-            // Redraw canvas dengan sticker baru
-            const dataURL = localStorage.getItem('photoStrip');
-            if (dataURL) {
-                const baseImage = new Image();
-                baseImage.onload = () => drawCanvas(baseImage);
-                baseImage.src = dataURL;
-            }
-        };
-        img.onerror = () => {
-            console.error('Failed to load sticker:', src);
+            setStickers(prev => [
+                ...prev,
+                {
+                    id: Date.now(),
+                    img,
+                    x: WIDTH / 2 - 100,
+                    y: HEIGHT / 2 - 100,
+                    width: img.width / 3,
+                    height: img.height / 3
+                }
+            ]);
         };
         img.src = src;
     };
 
+    /* ================= POINTER UTILS ================= */
     const getPointerPos = (e) => {
-        if (!canvasRef.current) return { x: 0, y: 0 };
-        
         const rect = canvasRef.current.getBoundingClientRect();
-        const scaleX = canvasRef.current.width / rect.width;
-        const scaleY = canvasRef.current.height / rect.height;
-        
-        const clientX = e.touches?.[0]?.clientX ?? e.clientX;
-        const clientY = e.touches?.[0]?.clientY ?? e.clientY;
-        
-        return {
-            x: (clientX - rect.left) * scaleX,
-            y: (clientY - rect.top) * scaleY
-        };
+        const scaleX = WIDTH / rect.width;
+        const scaleY = HEIGHT / rect.height;
+
+        const x = (e.touches?.[0]?.clientX ?? e.clientX) - rect.left;
+        const y = (e.touches?.[0]?.clientY ?? e.clientY) - rect.top;
+
+        return { x: x * scaleX, y: y * scaleY };
     };
 
+    /* ================= DRAG LOGIC ================= */
     const handlePointerDown = (e) => {
-        const { x: mouseX, y: mouseY } = getPointerPos(e);
-        
+        const { x, y } = getPointerPos(e);
+
         for (let i = stickers.length - 1; i >= 0; i--) {
-            const sticker = stickers[i];
-            
-            if (mouseX >= sticker.x && 
-                mouseX <= sticker.x + sticker.width && 
-                mouseY >= sticker.y && 
-                mouseY <= sticker.y + sticker.height) {
-                
-                setSelectedSticker(sticker);
-                setDragOffset({
-                    x: mouseX - sticker.x,
-                    y: mouseY - sticker.y
+            const s = stickers[i];
+            if (
+                x >= s.x &&
+                x <= s.x + s.width &&
+                y >= s.y &&
+                y <= s.y + s.height
+            ) {
+                setActiveStickerId(s.id);
+                setDragOffset({ x: x - s.x, y: y - s.y });
+
+                // bring to front
+                setStickers(prev => {
+                    const copy = [...prev];
+                    const found = copy.splice(i, 1)[0];
+                    copy.push(found);
+                    return copy;
                 });
-                
-                // Move sticker to top of array
-                const updatedStickers = [...stickers];
-                updatedStickers.splice(i, 1);
-                updatedStickers.push({ ...sticker, dragging: true });
-                setStickers(updatedStickers);
-                
-                e.preventDefault();
                 break;
             }
         }
     };
 
     const handlePointerMove = (e) => {
-        if (!selectedSticker) return;
-        
-        const { x: mouseX, y: mouseY } = getPointerPos(e);
-        
-        const updatedStickers = stickers.map(sticker => {
-            if (sticker === selectedSticker) {
-                return {
-                    ...sticker,
-                    x: mouseX - dragOffset.x,
-                    y: mouseY - dragOffset.y
-                };
-            }
-            return sticker;
-        });
-        
-        setStickers(updatedStickers);
-        
-        // Update canvas
-        const dataURL = localStorage.getItem('photoStrip');
-        if (dataURL) {
-            const baseImage = new Image();
-            baseImage.onload = () => {
-                const ctx = canvasRef.current.getContext('2d');
-                ctx.clearRect(0, 0, WIDTH, HEIGHT);
-                ctx.drawImage(baseImage, 0, 0, WIDTH, HEIGHT);
-                updatedStickers.forEach(s => {
-                    ctx.drawImage(s.img, s.x, s.y, s.width, s.height);
-                });
-            };
-            baseImage.src = dataURL;
-        }
-        
-        e.preventDefault();
+        if (!activeStickerId) return;
+        const { x, y } = getPointerPos(e);
+
+        setStickers(prev =>
+            prev.map(s =>
+                s.id === activeStickerId
+                    ? { ...s, x: x - dragOffset.x, y: y - dragOffset.y }
+                    : s
+            )
+        );
     };
 
     const handlePointerUp = () => {
-        if (selectedSticker) {
-            const updatedStickers = stickers.map(sticker => {
-                if (sticker === selectedSticker) {
-                    return { ...sticker, dragging: false };
-                }
-                return sticker;
-            });
-            
-            setStickers(updatedStickers);
-            setSelectedSticker(null);
-        }
+        setActiveStickerId(null);
     };
 
+    /* ================= DOWNLOAD ================= */
     const handleDownload = () => {
-        if (!canvasRef.current) return;
-        
-        canvasRef.current.toBlob((blob) => {
+        canvasRef.current.toBlob(blob => {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = 'fish-photobooth.png';
-            document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        }, 'image/png');
+        });
     };
 
+    /* ================= RESET ================= */
     const handleReset = () => {
         setStickers([]);
-        setSeaweedIndex(0);
-        setBubbleIndex(0);
-        
-        // Redraw canvas tanpa sticker
-        const dataURL = localStorage.getItem('photoStrip');
-        if (dataURL) {
-            const baseImage = new Image();
-            baseImage.onload = () => {
-                const ctx = canvasRef.current.getContext('2d');
-                ctx.clearRect(0, 0, WIDTH, HEIGHT);
-                ctx.drawImage(baseImage, 0, 0, WIDTH, HEIGHT);
-            };
-            baseImage.src = dataURL;
-        }
+        if (baseImage) draw(baseImage, []);
     };
-
-    useEffect(() => {
-        // Redraw canvas when stickers change
-        if (isLoaded) {
-            const dataURL = localStorage.getItem('photoStrip');
-            if (dataURL) {
-                const baseImage = new Image();
-                baseImage.onload = () => drawCanvas(baseImage);
-                baseImage.src = dataURL;
-            }
-        }
-    }, [stickers, isLoaded]);
 
     return (
         <div className="final-page">
             <Logo />
-            
-            <div className="heading-content">
-                <div className="menu-header" style={{ display: 'none' }}></div>
-                <div className="sticker-container">
-                    <h1>Add Stickers!</h1>
-                    <p>(drag to reposition)</p>
-                    <div className="sticker-btns">
-                        <button 
-                            id="addFish" 
-                            className="sticker-btn fish-btn"
-                            onClick={() => addSticker('/Assets/fish-photobooth/camerapage/stickers/fish.png')}
-                        >
-                            Add Fish
-                        </button>
-                        <button 
-                            id="addOctopus" 
-                            className="sticker-btn octopus-btn"
-                            onClick={() => addSticker('/Assets/fish-photobooth/camerapage/stickers/octopus.png')}
-                        >
-                            Add Octopus
-                        </button>
-                        <button 
-                            id="addSeaweed" 
-                            className="sticker-btn seaweed-btn"
-                            onClick={() => {
-                                addSticker(seaweedImages[seaweedIndex]);
-                                setSeaweedIndex((seaweedIndex + 1) % seaweedImages.length);
-                            }}
-                        >
-                            Add Seaweed
-                        </button>
-                        <button 
-                            id="addAx" 
-                            className="sticker-btn axolotl-btn"
-                            onClick={() => addSticker('/Assets/fish-photobooth/camerapage/stickers/axolotl.png')}
-                        >
-                            Add Axolotl
-                        </button>
-                        <button 
-                            id="addBubble" 
-                            className="sticker-btn bubble-btn"
-                            onClick={() => {
-                                addSticker(bubbleImages[bubbleIndex]);
-                                setBubbleIndex((bubbleIndex + 1) % bubbleImages.length);
-                            }}
-                        >
-                            Add Bubble
-                        </button>
-                        <button 
-                            id="reset" 
-                            className="sticker-btn reset-btn"
-                            onClick={handleReset}
-                        >
-                            Reset
-                        </button>
-                    </div>
+
+            <div className="sticker-container">
+                <h1>Add Stickers!</h1>
+                <p>(drag to reposition)</p>
+
+                <div className="sticker-btns">
+                    <button
+                        id="addFish"
+                        className="sticker-btn fish-btn"
+                        onClick={() => addSticker('/Assets/fish-photobooth/camerapage/stickers/fish.png')}
+                    >
+                        Add Fish
+                    </button>
+                    <button
+                        id="addOctopus"
+                        className="sticker-btn octopus-btn"
+                        onClick={() => addSticker('/Assets/fish-photobooth/camerapage/stickers/octopus.png')}
+                    >
+                        Add Octopus
+                    </button>
+                    <button
+                        id="addSeaweed"
+                        className="sticker-btn seaweed-btn"
+                        onClick={() => {
+                            addSticker(seaweedImages[seaweedIndex]);
+                            setSeaweedIndex((seaweedIndex + 1) % seaweedImages.length);
+                        }}
+                    >
+                        Add Seaweed
+                    </button>
+                    <button
+                        id="addAx"
+                        className="sticker-btn axolotl-btn"
+                        onClick={() => addSticker('/Assets/fish-photobooth/camerapage/stickers/axolotl.png')}
+                    >
+                        Add Axolotl
+                    </button>
+                    <button
+                        id="addBubble"
+                        className="sticker-btn bubble-btn"
+                        onClick={() => {
+                            addSticker(bubbleImages[bubbleIndex]);
+                            setBubbleIndex((bubbleIndex + 1) % bubbleImages.length);
+                        }}
+                    >
+                        Add Bubble
+                    </button>
+                    <button
+                        id="reset"
+                        className="sticker-btn reset-btn"
+                        onClick={handleReset}
+                    >
+                        Reset
+                    </button>
                 </div>
             </div>
 
             <div id="canvasContainer">
-                <canvas 
-                    id="finalCanvas"
+                <canvas
                     ref={canvasRef}
                     width={WIDTH}
                     height={HEIGHT}
@@ -316,21 +224,13 @@ const Final = () => {
                     onTouchStart={handlePointerDown}
                     onTouchMove={handlePointerMove}
                     onTouchEnd={handlePointerUp}
-                    style={{ 
-                        cursor: selectedSticker ? 'grabbing' : 'grab',
-                        width: '100%',
-                        height: 'auto'
-                    }}
+                    style={{ width: '100%', touchAction: 'none', cursor: 'grab' }}
                 />
             </div>
 
             <div className="button-container">
-                <button id="downloadBtn" onClick={handleDownload}>
-                    Download
-                </button>
-                <button id="homeBtn" onClick={() => navigate('/')}>
-                    Home
-                </button>
+                <button onClick={handleDownload}>Download</button>
+                <button onClick={() => navigate('/')}>Home</button>
             </div>
         </div>
     );
