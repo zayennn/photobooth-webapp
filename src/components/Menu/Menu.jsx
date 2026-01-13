@@ -29,7 +29,6 @@ const Menu = () => {
         <button id="menu-upload-button" onClick={handleUpload}>Upload photos</button>
       </div>
 
-      {/* Load JavaScript */}
       <script src="Javascripts/home.js" async></script>
     </>
   );
