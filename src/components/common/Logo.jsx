@@ -13,7 +13,7 @@ const Logo = () => {
         <div className={styles.logo} onClick={handleClick}>
             <img
                 src="/Assets/fish-photobooth/logo-new.png"
-                alt="Nashallery's Booth Logo"
+                alt="Booth Logo"
             />
         </div>
     );
