@@ -1,25 +1,16 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import Home from './components/Home/Home';
-import Menu from './components/Menu/Menu';
-import Camera from './components/Camera/Camera';
-import Upload from './components/Upload/Upload';
-import Final from './components/Final/Final';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './components/Home.jsx';
+import Menu from './components/Menu.jsx';
+import Camera from './components/Camera.jsx';
+import Upload from './components/Upload.jsx';
+import Final from './components/Final.jsx';
 import './App.css';
-
-const Logo = () => {
-  const navigate = useNavigate();
-
-  return (
-    <div className="logo" onClick={() => navigate('/')}>
-      <img src="Assets/fish-photobooth/logo-new.png" alt="Logo" />
-    </div>
-  );
-};
 
 function App() {
   return (
     <Router>
-      <div className="app">
+      <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
@@ -32,5 +23,4 @@ function App() {
   );
 }
 
-export { Logo };
 export default App;
