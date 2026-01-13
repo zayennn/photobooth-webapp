@@ -34,7 +34,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Load JavaScript */}
       <script src="Javascripts/home.js" async></script>
     </>
   );
