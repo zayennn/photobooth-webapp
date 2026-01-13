@@ -42,7 +42,6 @@ const Upload = () => {
     const bubblesScript = loadBubbles();
     const uploadScript = loadUpload();
 
-    // Setup event listeners
     if (uploadBtnRef.current && fileInputRef.current) {
       uploadBtnRef.current.addEventListener('click', () => {
         fileInputRef.current.click();
