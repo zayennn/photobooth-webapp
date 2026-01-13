@@ -7,11 +7,11 @@ const Camera = () => {
     const navigate = useNavigate();
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
-    const countdownRef = useRef(null);
-    const [photoStage, setPhotoStage] = useState(0);
+    const [photoStage, setPhotoStage] = useState(0); // 0=top, 1=bottom, 2=done
     const [isCountingDown, setIsCountingDown] = useState(false);
     const [countdown, setCountdown] = useState(3);
     const [stream, setStream] = useState(null);
+    const [capturedPhotos, setCapturedPhotos] = useState([]);
 
     const WIDTH = 1176;
     const HEIGHT = 1470;
@@ -81,12 +81,16 @@ const Camera = () => {
         const video = videoRef.current;
         const ctx = canvasRef.current.getContext('2d');
         const yOffset = photoStage === 0 ? 0 : HALF;
+        
+        // Dapatkan dimensi video
         const vW = video.videoWidth;
         const vH = video.videoHeight;
         const targetAspect = WIDTH / HALF;
         const vAspect = vW / vH;
+        
         let sx, sy, sw, sh;
 
+        // Hitung cropping area
         if (vAspect > targetAspect) {
             sh = vH;
             sw = vH * targetAspect;
@@ -99,47 +103,78 @@ const Camera = () => {
             sy = (vH - sh) / 2;
         }
 
+        // Gambar foto dengan mirror effect
         ctx.save();
         ctx.translate(WIDTH, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(video, sx, sy, sw, sh, 0, yOffset, WIDTH, HALF);
         ctx.restore();
 
+        // Simpan foto yang sudah diambil
+        const currentCaptured = canvasRef.current.toDataURL('image/png');
+        setCapturedPhotos(prev => [...prev, currentCaptured]);
+
+        // Update stage
         if (photoStage === 0) {
             setPhotoStage(1);
             moveVideoToHalf(1);
         } else if (photoStage === 1) {
             setPhotoStage(2);
-            finalizePhotoStrip();
+            setTimeout(finalizePhotoStrip, 100);
         }
     };
 
     const finalizePhotoStrip = () => {
-        if (!videoRef.current || !canvasRef.current) return;
+        if (!canvasRef.current) return;
 
-        const video = videoRef.current;
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
-
-        video.style.display = 'none';
-
+        
+        // Load frame overlay
         const frame = new Image();
-        frame.src = 'Assets/fish-photobooth/camerapage/frame.png';
+        frame.crossOrigin = 'anonymous'; // Untuk menghindari CORS issues
         frame.onload = () => {
+            // Gambar frame di atas foto
             ctx.drawImage(frame, 0, 0, WIDTH, HEIGHT);
-            localStorage.setItem('photoStrip', canvas.toDataURL('image/png'));
-            navigate('/final');
+            
+            // Simpan ke localStorage
+            const finalImage = canvas.toDataURL('image/png');
+            localStorage.setItem('photoStrip', finalImage);
+            
+            // Navigate ke final page
+            setTimeout(() => {
+                navigate('/final');
+            }, 100);
         };
-
-        if (frame.complete) {
-            frame.onload();
-        }
+        
+        frame.onerror = () => {
+            console.error('Failed to load frame image');
+            // Tetap simpan tanpa frame jika gagal load
+            const finalImage = canvas.toDataURL('image/png');
+            localStorage.setItem('photoStrip', finalImage);
+            setTimeout(() => {
+                navigate('/final');
+            }, 100);
+        };
+        
+        frame.src = '/Assets/fish-photobooth/camerapage/frame.png';
     };
 
     const handleTakePhoto = () => {
         if (photoStage > 1) return;
         startCountdown();
     };
+
+    // Reset video display when photoStage changes
+    useEffect(() => {
+        if (videoRef.current) {
+            if (photoStage === 0) {
+                moveVideoToHalf(0);
+            } else if (photoStage === 1) {
+                moveVideoToHalf(1);
+            }
+        }
+    }, [photoStage]);
 
     return (
         <div className="camera-page">
@@ -149,7 +184,7 @@ const Camera = () => {
                 <BubbleAnimation />
 
                 {isCountingDown && (
-                    <div className="countdown-timer" ref={countdownRef}>
+                    <div className="countdown-timer">
                         {countdown}
                     </div>
                 )}
@@ -157,8 +192,9 @@ const Camera = () => {
                 <canvas
                     id="finalCanvas"
                     ref={canvasRef}
-                    width="1176"
-                    height="1470"
+                    width={WIDTH}
+                    height={HEIGHT}
+                    style={{ display: 'block' }}
                 />
 
                 <video
@@ -182,7 +218,7 @@ const Camera = () => {
 
                 <img
                     className="frame-overlay"
-                    src="Assets/fish-photobooth/camerapage/frame.png"
+                    src="/Assets/fish-photobooth/camerapage/frame.png"
                     alt="frame overlay"
                 />
             </div>
@@ -191,9 +227,10 @@ const Camera = () => {
                 <button
                     id="takePhoto"
                     onClick={handleTakePhoto}
-                    disabled={photoStage > 1}
+                    disabled={photoStage > 1 || isCountingDown}
                 >
-                    Capture
+                    {photoStage === 0 ? 'Take First Photo' : 
+                     photoStage === 1 ? 'Take Second Photo' : 'Done!'}
                 </button>
                 <button
                     id="readyButton"
