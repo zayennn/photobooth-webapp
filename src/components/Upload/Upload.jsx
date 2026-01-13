@@ -30,7 +30,6 @@ const Upload = () => {
       return script;
     };
 
-    // Load upload.js
     const loadUpload = () => {
       const script = document.createElement('script');
       script.src = 'Javascripts/upload.js';
