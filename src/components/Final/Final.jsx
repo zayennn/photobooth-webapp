@@ -32,11 +32,9 @@ const Final = () => {
   };
 
   useEffect(() => {
-    // Load final.js sebagai module
     const loadFinal = async () => {
       try {
         const module = await import('../utils/final.js');
-        // Initialize jika diperlukan
         if (module.init) {
           module.init({
             canvas: canvasRef.current,
