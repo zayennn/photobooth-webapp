@@ -36,7 +36,6 @@ const Camera = () => {
     const cameraScript = loadCamera();
 
     return () => {
-      // Cleanup scripts
       if (bubblesScript) document.body.removeChild(bubblesScript);
       if (cameraScript) document.body.removeChild(cameraScript);
     };
@@ -76,7 +75,6 @@ const Camera = () => {
         <button id="readyButton" disabled style={{ display: 'none' }}>Ready</button>
       </div>
 
-      {/* JavaScript akan di-load via useEffect */}
     </>
   );
 };
