@@ -8,7 +8,7 @@ const Logo = () => {
         <div
             className="logo"
             onClick={() => navigate('/')}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', display: 'block', margin: "0 auto" }}
         >
             <img
                 src="Assets/fish-photobooth/logo-new.png"

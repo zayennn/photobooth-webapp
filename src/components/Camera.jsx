@@ -82,7 +82,6 @@ const Camera = () => {
         const ctx = canvasRef.current.getContext('2d');
         const yOffset = photoStage === 0 ? 0 : HALF;
         
-        // Dapatkan dimensi video
         const vW = video.videoWidth;
         const vH = video.videoHeight;
         const targetAspect = WIDTH / HALF;
@@ -90,7 +89,6 @@ const Camera = () => {
         
         let sx, sy, sw, sh;
 
-        // Hitung cropping area
         if (vAspect > targetAspect) {
             sh = vH;
             sw = vH * targetAspect;
@@ -103,18 +101,15 @@ const Camera = () => {
             sy = (vH - sh) / 2;
         }
 
-        // Gambar foto dengan mirror effect
         ctx.save();
         ctx.translate(WIDTH, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(video, sx, sy, sw, sh, 0, yOffset, WIDTH, HALF);
         ctx.restore();
 
-        // Simpan foto yang sudah diambil
         const currentCaptured = canvasRef.current.toDataURL('image/png');
         setCapturedPhotos(prev => [...prev, currentCaptured]);
 
-        // Update stage
         if (photoStage === 0) {
             setPhotoStage(1);
             moveVideoToHalf(1);
@@ -130,18 +125,14 @@ const Camera = () => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         
-        // Load frame overlay
         const frame = new Image();
-        frame.crossOrigin = 'anonymous'; // Untuk menghindari CORS issues
+        frame.crossOrigin = 'anonymous';
         frame.onload = () => {
-            // Gambar frame di atas foto
             ctx.drawImage(frame, 0, 0, WIDTH, HEIGHT);
             
-            // Simpan ke localStorage
             const finalImage = canvas.toDataURL('image/png');
             localStorage.setItem('photoStrip', finalImage);
             
-            // Navigate ke final page
             setTimeout(() => {
                 navigate('/final');
             }, 100);
@@ -149,7 +140,6 @@ const Camera = () => {
         
         frame.onerror = () => {
             console.error('Failed to load frame image');
-            // Tetap simpan tanpa frame jika gagal load
             const finalImage = canvas.toDataURL('image/png');
             localStorage.setItem('photoStrip', finalImage);
             setTimeout(() => {
@@ -165,7 +155,6 @@ const Camera = () => {
         startCountdown();
     };
 
-    // Reset video display when photoStage changes
     useEffect(() => {
         if (videoRef.current) {
             if (photoStage === 0) {
