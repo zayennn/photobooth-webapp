@@ -1,13 +1,11 @@
-/* Copy paste semua CSS dari file home.css asli */
+/* root variables */
 :root {
     --main-background: #f5f4f0;
     --dark-green-theme: #2a4a53;
     --main-text: #555555;
     --white: #ffffff;
-
     --container-width: 500px;
     --container-aspect-ratio: 604 / 574;
-
     --fish-rotation: 7.52deg;
     --strip-rotation: 16.52deg;
     --bubble-rotation: -16.52deg;
@@ -34,6 +32,7 @@ body {
 .logo {
     position: relative;
     width: 80px;
+    cursor: pointer;
 }
 
 .logo img {
@@ -187,6 +186,7 @@ button {
     border-radius: 0.5rem;
     text-align: center;
     transition: transform 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 button:hover {

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import BubbleAnimation from './BubbleAnimation';
-import '../styles/camera.css';
 
 const Camera = () => {
     const navigate = useNavigate();
