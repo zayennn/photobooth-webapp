@@ -27,7 +27,6 @@ const Final = () => {
     const [seaweedIndex, setSeaweedIndex] = useState(0);
     const [bubbleIndex, setBubbleIndex] = useState(0);
 
-    /* ================= LOAD BASE IMAGE ================= */
     useEffect(() => {
         const dataURL = localStorage.getItem('photoStrip');
         if (!dataURL) {
@@ -44,7 +43,6 @@ const Final = () => {
         img.src = dataURL;
     }, [navigate]);
 
-    /* ================= DRAW FUNCTION ================= */
     const draw = (base, stickersToDraw) => {
         const ctx = canvasRef.current.getContext('2d');
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -59,7 +57,6 @@ const Final = () => {
         if (baseImage) draw(baseImage, stickers);
     }, [stickers, baseImage]);
 
-    /* ================= ADD STICKER ================= */
     const addSticker = (src) => {
         const img = new Image();
         img.onload = () => {
@@ -78,7 +75,6 @@ const Final = () => {
         img.src = src;
     };
 
-    /* ================= POINTER UTILS ================= */
     const getPointerPos = (e) => {
         const rect = canvasRef.current.getBoundingClientRect();
         const scaleX = WIDTH / rect.width;
@@ -90,7 +86,6 @@ const Final = () => {
         return { x: x * scaleX, y: y * scaleY };
     };
 
-    /* ================= DRAG LOGIC ================= */
     const handlePointerDown = (e) => {
         const { x, y } = getPointerPos(e);
 
@@ -105,7 +100,6 @@ const Final = () => {
                 setActiveStickerId(s.id);
                 setDragOffset({ x: x - s.x, y: y - s.y });
 
-                // bring to front
                 setStickers(prev => {
                     const copy = [...prev];
                     const found = copy.splice(i, 1)[0];
@@ -134,7 +128,6 @@ const Final = () => {
         setActiveStickerId(null);
     };
 
-    /* ================= DOWNLOAD ================= */
     const handleDownload = () => {
         canvasRef.current.toBlob(blob => {
             const url = URL.createObjectURL(blob);
@@ -146,7 +139,6 @@ const Final = () => {
         });
     };
 
-    /* ================= RESET ================= */
     const handleReset = () => {
         setStickers([]);
         if (baseImage) draw(baseImage, []);

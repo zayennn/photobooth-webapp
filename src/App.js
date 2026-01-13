@@ -6,6 +6,7 @@ import Camera from './components/Camera.jsx';
 import Upload from './components/Upload.jsx';
 import Final from './components/Final.jsx';
 import './App.css';
+import './components/Upload.css';
 
 function App() {
   return (
