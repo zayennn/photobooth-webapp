@@ -57,7 +57,6 @@ const Final = () => {
 
     loadFinal();
 
-    // Setup event listeners untuk tombol yang tidak ada di final.js
     if (homeBtnRef.current) {
       homeBtnRef.current.addEventListener('click', handleHome);
     }
