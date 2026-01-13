@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# Photobooth Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A small photobooth-style web app built with React. It guides users through taking or uploading photos, creates a photostrip, and allows adding fun stickers before downloading the final image.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Home / Menu flow**
+- **Camera capture flow** (2-step capture and photostrip composition)
+- **Upload flow** (use an existing image)
+- **Final editor**
+  - Add stickers (fish, octopus, seaweed variants, bubbles variants, axolotl)
+  - Drag and reposition stickers on canvas
+  - Reset stickers
+  - Download the final image
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React
+- React Router
+- Create React App (react-scripts)
+- HTML Canvas APIs
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js (LTS recommended)
+- npm
 
-### `npm run build`
+### Install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Run locally
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm start
+```
 
-### `npm run eject`
+Open `http://localhost:3000`.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Scripts
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `npm start`
+  - Run dev server
+- `npm run build`
+  - Build production bundle to `build/`
+- `npm test`
+  - Run tests
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- `src/`
+  - `components/` – page and UI components (Home, Menu, Camera, Upload, Final)
+  - `utils/` – helper functions for camera/canvas/final composition
+- `public/`
+  - `Assets/` – all images and art assets
+  - `styles/` – global page styles loaded via `public/index.html`
 
-## Learn More
+## Assets & Paths
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Static images live under `public/Assets/...` and are referenced with absolute paths like:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `/Assets/fish-photobooth/...`
 
-### Code Splitting
+## Notes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- The camera page requires browser camera permission.
+- The photostrip image is stored in `localStorage` temporarily to pass data between pages.
