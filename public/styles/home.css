@@ -86,7 +86,7 @@ body {
 .menu-header {
     width: 20rem;
     aspect-ratio: 517 / 68;
-    background-image: url('../Assets/fish-photobooth/menupage/Header.png');
+    background-image: url('/Assets/fish-photobooth/menupage/Header.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -114,7 +114,7 @@ body {
     height: calc(534.4 / 574 * 100%);
     left: calc(114 / 604 * 100%);
     top: calc(20 / 574 * 100%);
-    background-image: url('../Assets/fish-photobooth/homepage/animated-photobooth-mock/1.png');
+    background-image: url('/Assets/fish-photobooth/homepage/animated-photobooth-mock/1.png');
     transition: opacity 0.3s ease-in-out;
     opacity: 1;
 }
@@ -126,7 +126,7 @@ body {
     height: calc(331.94 / 574 * 100%);
     right: calc(35 / 604 * 100%);
     top: calc(160 / 574 * 100%);
-    background-image: url('../Assets/fish-photobooth/homepage/photostrip-straight.png');
+    background-image: url('/Assets/fish-photobooth/homepage/photostrip-straight.png');
     transform: rotate(var(--strip-rotation));
 }
 
@@ -137,7 +137,7 @@ body {
     height: calc(109 / 574 * 100%);
     left: calc(26 / 604 * 100%);
     top: calc(2 / 574 * 100%);
-    background-image: url('../Assets/fish-photobooth/homepage/animated-bubbles-home/bubble-1.png');
+    background-image: url('/Assets/fish-photobooth/homepage/animated-bubbles-home/bubble-1.png');
     transform: rotate(var(--bubble-rotation));
 }
 
@@ -148,7 +148,7 @@ body {
     height: calc(44.21 / 574 * 100%);
     left: calc(25 / 604 * 100%);
     top: calc(251.34 / 574 * 100%);
-    background-image: url('../Assets/fish-photobooth/homepage/goldfish.png');
+    background-image: url('/Assets/fish-photobooth/homepage/goldfish.png');
     transform: rotate(calc(-1 * var(--fish-rotation)));
 }
 
@@ -158,7 +158,7 @@ body {
     height: calc(44.21 / 574 * 100%);
     left: calc(425.46 / 604 * 100%);
     top: calc(8.69 / 574 * 100%);
-    background-image: url('../Assets/fish-photobooth/homepage/goldfish.png');
+    background-image: url('/Assets/fish-photobooth/homepage/goldfish.png');
     transform: rotate(var(--fish-rotation));
 }
 
@@ -168,7 +168,7 @@ body {
     height: calc(44.21 / 574 * 100%);
     right: calc(60 / 604 * 100%);
     bottom: calc(10 / 574 * 100%);
-    background-image: url('../Assets/fish-photobooth/homepage/goldfish.png');
+    background-image: url('/Assets/fish-photobooth/homepage/goldfish.png');
     transform: rotate(calc(-1 * var(--fish-rotation)));
 }
 

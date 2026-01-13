@@ -133,27 +133,27 @@ button:hover {
 
 /* individual sticker urls */
 .fish-btn {
-    background-image: url("../Assets/fish-photobooth/finalpage/fishButton.png");
+    background-image: url("/Assets/fish-photobooth/finalpage/fishButton.png");
 }
 
 .octopus-btn {
-    background-image: url("../Assets/fish-photobooth/finalpage/octopusButton.png");
+    background-image: url("/Assets/fish-photobooth/finalpage/octopusButton.png");
 }
 
 .seaweed-btn {
-    background-image: url("../Assets/fish-photobooth/finalpage/seaweedButton.png");
+    background-image: url("/Assets/fish-photobooth/finalpage/seaweedButton.png");
 }
 
 .axolotl-btn {
-    background-image: url("../Assets/fish-photobooth/finalpage/axolotlButton.png");
+    background-image: url("/Assets/fish-photobooth/finalpage/axolotlButton.png");
 }
 
 .bubble-btn {
-    background-image: url("../Assets/fish-photobooth/finalpage/bubbleButton.png");
+    background-image: url("/Assets/fish-photobooth/finalpage/bubbleButton.png");
 }
 
 .reset-btn {
-    background-image: url("../Assets/fish-photobooth/finalpage/resetButton.png");
+    background-image: url("/Assets/fish-photobooth/finalpage/resetButton.png");
 }
 
 /* heading content */
@@ -179,7 +179,7 @@ button:hover {
 .menu-header {
     width: 100%;
     aspect-ratio: 517/68;
-    background-image: url('../Assets/fish-photobooth/menupage/Header.png');
+    background-image: url('/Assets/fish-photobooth/menupage/Header.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
