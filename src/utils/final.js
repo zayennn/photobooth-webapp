@@ -1,4 +1,3 @@
-// Final page utility module
 export const loadPhotoStrip = (canvas, setStickers) => {
     const dataURL = localStorage.getItem('photoStrip');
     if (!dataURL) {
