@@ -21,7 +21,6 @@ const Upload = () => {
   };
 
   useEffect(() => {
-    // Load bubbles.js
     const loadBubbles = () => {
       const script = document.createElement('script');
       script.src = 'Javascripts/bubbles.js';
