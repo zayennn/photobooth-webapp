@@ -8,7 +8,7 @@ const Camera = () => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const countdownRef = useRef(null);
-    const [photoStage, setPhotoStage] = useState(0); // 0=top, 1=bottom, 2=done
+    const [photoStage, setPhotoStage] = useState(0);
     const [isCountingDown, setIsCountingDown] = useState(false);
     const [countdown, setCountdown] = useState(3);
     const [stream, setStream] = useState(null);

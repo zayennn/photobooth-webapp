@@ -7,7 +7,7 @@ const Upload = () => {
     const navigate = useNavigate();
     const canvasRef = useRef(null);
     const fileInputRef = useRef(null);
-    const [photoStage, setPhotoStage] = useState(0); // 0=top, 1=bottom, 2=done
+    const [photoStage, setPhotoStage] = useState(0);
     const [isReady, setIsReady] = useState(false);
 
     const WIDTH = 1176;
