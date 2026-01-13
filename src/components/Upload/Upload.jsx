@@ -50,7 +50,6 @@ const Upload = () => {
     }
 
     return () => {
-      // Cleanup scripts
       if (bubblesScript) document.body.removeChild(bubblesScript);
       if (uploadScript) document.body.removeChild(uploadScript);
     };
